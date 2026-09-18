@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orquestrador de Ferramentas · CRAS Manduri</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <img src="logo_cras.png" alt="Logo do CRAS">
+      <div>
+        <strong>Orquestrador CRAS</strong>
+        <span>Centro de Referência de Assistência Social · Manduri/SP</span>
+      </div>
+    </div>
+    <p class="privacy-note">Uso interno · os arquivos permanecem no seu computador</p>
+  </header>
+
+  <main class="app-shell">
+    <section class="intro">
+      <p class="eyebrow">Ferramentas de atendimento</p>
+      <h1>Escolha uma ferramenta para começar</h1>
+      <p>As ferramentas ficam separadas por abas para facilitar o uso e manter cada fluxo organizado.</p>
+    </section>
+
+    <nav class="tabs" aria-label="Ferramentas do CRAS" role="tablist">
+      <button class="tab is-active" type="button" role="tab" aria-selected="true" aria-controls="panel-documentos" data-tool="documentos">
+        <span aria-hidden="true">📁</span>
+        Documentos
+      </button>
+      <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="panel-declaracao" data-tool="declaracao">
+        <span aria-hidden="true">📝</span>
+        Declaração
+      </button>
+      <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="panel-exclusao" data-tool="exclusao">
+        <span aria-hidden="true">📄</span>
+        Ficha de exclusão
+      </button>
+      <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="panel-formatador" data-tool="formatador">
+        <span aria-hidden="true">🔤</span>
+        Formatar pastas
+      </button>
+    </nav>
+
+    <section id="panel-documentos" class="tool-panel is-active" role="tabpanel">
+      <div class="page-tool">
+        <a class="primary-button page-tool-link" href="cras_finder.html" target="_blank" rel="noopener">Abrir CRAS Finder em nova aba</a>
+        <p>Abra o Finder em uma página própria para permitir que o navegador selecione a pasta de atendimentos.</p>
+      </div>
+    </section>
+    <section id="panel-declaracao" class="tool-panel" role="tabpanel" hidden>
+      <iframe src="ficha_hipossuficiencia.html" title="Gerador de declaração de hipossuficiência" loading="lazy"></iframe>
+    </section>
+    <section id="panel-exclusao" class="tool-panel" role="tabpanel" hidden>
+      <iframe src="ficha_exclusao.html" title="Ficha de exclusão do Cadastro Único" loading="lazy"></iframe>
+    </section>
+    <section id="panel-formatador" class="tool-panel formatter-panel" role="tabpanel" hidden>
+      <div class="formatter-card">
+        <div class="formatter-icon" aria-hidden="true">Aa</div>
+        <div>
+          <p class="eyebrow">Organização de arquivos</p>
+          <h2>Deixar nomes das pastas em maiúsculas</h2>
+          <p>Selecione uma pasta. Todas as subpastas serão renomeadas para letras maiúsculas, começando pelas pastas mais profundas para preservar a estrutura.</p>
+        </div>
+        <button class="primary-button" id="select-folder" type="button">Selecionar pasta</button>
+        <button class="secondary-button" id="format-folder" type="button" disabled>Formatar pastas</button>
+        <p class="support-warning" id="folder-support">Este navegador não permite renomear pastas pela página. Use o arquivo Python incluído no projeto.</p>
+        <div class="progress-area" id="formatter-status" aria-live="polite">
+          Nenhuma pasta selecionada.
+        </div>
+        <ul class="rename-log" id="rename-log" aria-live="polite"></ul>
+      </div>
+    </section>
+  </main>
+
+  <footer>Orquestrador CRAS · Manduri/SP</footer>
+  <script src="app.js"></script>
+</body>
+</html>

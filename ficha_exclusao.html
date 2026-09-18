@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ficha de Exclusão do Cadastro Único - CRAS Manduri</title>
+<style>
+  :root{
+    --azul:#1d4d7a;
+    --azul-esc:#123454;
+    --cinza-bg:#f2f4f7;
+    --cinza-borda:#c9d2dc;
+    --texto:#1f2937;
+    --branco:#ffffff;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI', Arial, sans-serif;
+    background:var(--cinza-bg);
+    color:var(--texto);
+    padding:24px 16px 60px;
+  }
+  h1.page-title{
+    text-align:center;
+    font-size:1.4rem;
+    color:var(--azul-esc);
+    margin:0 0 24px;
+  }
+  .wrap{
+    max-width:1200px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns: 380px 1fr;
+    gap:24px;
+    align-items:start;
+  }
+  @media (max-width: 900px){
+    .wrap{grid-template-columns: 1fr;}
+  }
+
+  /* ---------- FORM PANEL ---------- */
+  .panel{
+    background:var(--branco);
+    border:1px solid var(--cinza-borda);
+    border-radius:10px;
+    padding:20px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.06);
+  }
+  .panel h2{
+    font-size:1rem;
+    color:var(--azul-esc);
+    margin:0 0 16px;
+    padding-bottom:8px;
+    border-bottom:2px solid var(--azul);
+  }
+  label{
+    display:block;
+    font-size:.85rem;
+    font-weight:600;
+    margin:14px 0 4px;
+    color:#374151;
+  }
+  input[type=text], input[type=date]{
+    width:100%;
+    padding:9px 10px;
+    border:1px solid var(--cinza-borda);
+    border-radius:6px;
+    font-size:.9rem;
+    font-family:inherit;
+  }
+  input:focus{
+    outline:none;
+    border-color:var(--azul);
+    box-shadow:0 0 0 3px rgba(29,77,122,0.15);
+  }
+  fieldset{
+    border:1px solid var(--cinza-borda);
+    border-radius:6px;
+    margin:14px 0 4px;
+    padding:10px 12px;
+  }
+  legend{
+    font-size:.85rem;
+    font-weight:600;
+    color:#374151;
+    padding:0 6px;
+  }
+  .motivo-item{
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+    padding:6px 2px;
+    font-size:.88rem;
+    cursor:pointer;
+  }
+  .motivo-item input{
+    margin-top:3px;
+    accent-color:var(--azul);
+    width:16px;height:16px;
+    flex-shrink:0;
+  }
+  .hint{
+    font-size:.75rem;
+    color:#6b7280;
+    margin-top:4px;
+  }
+  .btn-gerar{
+    margin-top:20px;
+    width:100%;
+    background:var(--azul);
+    color:#fff;
+    border:none;
+    padding:12px;
+    border-radius:7px;
+    font-size:.95rem;
+    font-weight:700;
+    cursor:pointer;
+    letter-spacing:.3px;
+    transition:background .15s ease;
+  }
+  .btn-gerar:hover{background:var(--azul-esc);}
+  .btn-secundario{
+    margin-top:10px;
+    width:100%;
+    background:#fff;
+    color:var(--azul);
+    border:1px solid var(--azul);
+    padding:10px;
+    border-radius:7px;
+    font-size:.88rem;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .btn-secundario:hover{background:#eef3f8;}
+  .erro{
+    color:#b91c1c;
+    font-size:.8rem;
+    margin-top:10px;
+    display:none;
+  }
+
+  /* ---------- FICHA PREVIEW ---------- */
+  .ficha-outer{
+    background:var(--branco);
+    border:1px solid var(--cinza-borda);
+    border-radius:10px;
+    padding:16px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.06);
+  }
+  .ficha-toolbar{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-bottom:12px;
+  }
+  .ficha-toolbar button{
+    background:var(--azul);
+    color:#fff;
+    border:none;
+    padding:8px 14px;
+    border-radius:6px;
+    font-size:.82rem;
+    cursor:pointer;
+    font-weight:600;
+  }
+  .ficha-toolbar button:hover{background:var(--azul-esc);}
+  .ficha-toolbar button:disabled{
+    background:#a9b6c4;
+    cursor:not-allowed;
+  }
+
+  #ficha{
+    border:1px solid #333;
+    padding:28px 34px;
+    max-width:780px;
+    margin:0 auto;
+    background:#fff;
+    font-family:'Calibri','Segoe UI',Arial,sans-serif;
+    color:#000;
+  }
+  .cabecalho{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    border-bottom:2px solid #000;
+    padding-bottom:12px;
+    margin-bottom:14px;
+  }
+  .cabecalho img{
+    width:70px;
+    height:70px;
+    object-fit:contain;
+    flex-shrink:0;
+  }
+  .cabecalho .titulos{
+    text-align:center;
+    flex:1;
+  }
+  .cabecalho .titulos .t1{
+    font-size:.8rem;
+    letter-spacing:1px;
+  }
+  .cabecalho .titulos .t2{
+    font-size:1.05rem;
+    font-weight:700;
+    margin-top:2px;
+  }
+  .ficha-titulo{
+    text-align:center;
+    font-weight:700;
+    font-size:1rem;
+    text-transform:uppercase;
+    margin:14px 0 18px;
+  }
+  .campo-linha{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    font-size:.92rem;
+    margin:10px 0;
+    line-height:1.4;
+  }
+  .campo-linha .rotulo{
+    font-weight:700;
+    white-space:nowrap;
+  }
+  .campo-linha .valor{
+    border-bottom:1px solid #000;
+    flex:1;
+    min-width:120px;
+    padding:0 4px;
+  }
+  .motivos-titulo{
+    font-weight:700;
+    margin:20px 0 8px;
+    font-size:.92rem;
+  }
+  .motivo-linha{
+    font-size:.92rem;
+    margin:6px 0 6px 10px;
+  }
+  .motivo-linha .caixa{
+    display:inline-block;
+    width:1.4em;
+    text-align:center;
+    font-weight:700;
+  }
+  .rodape-local{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:30px;
+    font-size:.92rem;
+  }
+  .assinaturas{
+    display:flex;
+    justify-content:space-between;
+    margin-top:60px;
+    gap:20px;
+    flex-wrap:wrap;
+  }
+  .assinatura{
+    text-align:center;
+    flex:1;
+    min-width:220px;
+  }
+  .assinatura .linha{
+    border-top:1px solid #000;
+    margin-bottom:4px;
+  }
+  .rodape-endereco{
+    margin-top:40px;
+    border-top:1px solid #000;
+    padding-top:8px;
+    font-size:.72rem;
+    text-align:center;
+    color:#333;
+  }
+  .placeholder-vazio{
+    text-align:center;
+    color:#9ca3af;
+    font-size:.9rem;
+    padding:60px 10px;
+  }
+
+  @media print{
+    @page{margin:0;}
+    body{ padding:0; background:#fff; }
+    body *{ visibility:hidden; }
+    #ficha, #ficha *{ visibility:visible; }
+    #ficha{
+      position:absolute;
+      left:0; top:0;
+      border:none;
+      width:100%;
+      max-width:100%;
+      padding:10px 20px;
+    }
+    .panel, .ficha-toolbar{ display:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">Ficha de Exclusão de Pessoa do Cadastro Único — CRAS Manduri</h1>
+
+<div class="wrap">
+
+  <!-- ===================== FORMULÁRIO ===================== -->
+  <div class="panel">
+    <h2>Preencher dados</h2>
+
+    <label for="codigoFamiliar">Código Familiar</label>
+    <input type="text" id="codigoFamiliar" placeholder="Ex: 12345678901">
+
+    <label for="nis">NIS do Responsável pela Unidade Familiar</label>
+    <input type="text" id="nis" placeholder="Ex: 12345678900">
+
+    <label for="dataExclusao">Data da Exclusão</label>
+    <input type="date" id="dataExclusao">
+
+    <label for="nomePessoa">Nome da Pessoa</label>
+    <input type="text" id="nomePessoa" placeholder="Nome completo">
+
+    <label for="nisPessoa">NIS da Pessoa</label>
+    <input type="text" id="nisPessoa" placeholder="Ex: 12345678900">
+
+    <fieldset>
+      <legend>Motivo da Exclusão</legend>
+
+      <label class="motivo-item">
+        <input type="radio" name="motivo" value="Falecimento da Pessoa">
+        Falecimento da Pessoa
+      </label>
+      <label class="motivo-item">
+        <input type="radio" name="motivo" value="Desligamento da Pessoa daquela Família em que está cadastrada">
+        Desligamento da Pessoa daquela Família em que está cadastrada
+      </label>
+      <label class="motivo-item">
+        <input type="radio" name="motivo" value="Solicitação da Própria Pessoa">
+        Solicitação da Própria Pessoa
+      </label>
+      <label class="motivo-item">
+        <input type="radio" name="motivo" value="Decisão Judicial">
+        Decisão Judicial
+      </label>
+      <div class="hint">Selecione apenas 1 motivo.</div>
+    </fieldset>
+
+    <div class="hint">A data de hoje (<span id="dataHojePreview"></span>) será preenchida automaticamente no campo "Data" da ficha, no momento em que você clicar em Gerar.</div>
+
+    <div class="erro" id="msgErro">Preencha todos os campos e selecione um motivo antes de gerar.</div>
+
+    <button class="btn-gerar" id="btnGerar">Gerar Ficha</button>
+    <button class="btn-secundario" id="btnLimpar">Limpar formulário</button>
+  </div>
+
+  <!-- ===================== FICHA (PREVIEW) ===================== -->
+  <div class="ficha-outer">
+    <div class="ficha-toolbar">
+      <button id="btnImprimir" disabled>Imprimir / Salvar PDF</button>
+    </div>
+
+    <div id="ficha">
+      <div id="fichaConteudo">
+        <div class="placeholder-vazio">
+          Preencha o formulário ao lado e clique em <strong>"Gerar Ficha"</strong><br>
+          para visualizar o documento preenchido aqui.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const LOGO_SRC = "logo_cras.png";
+
+function hojeISO(){
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function formatarDataBR(iso){
+  if(!iso) return '';
+  const [ano, mes, dia] = iso.split('-');
+  return `${dia}/${mes}/${ano}`;
+}
+
+// mostra no painel qual será a data de hoje usada automaticamente
+document.getElementById('dataHojePreview').textContent = formatarDataBR(hojeISO());
+
+function marcarMotivo(valorSelecionado, textoOpcao){
+  return valorSelecionado === textoOpcao ? 'X' : '';
+}
+
+function gerarFicha(){
+  const codigoFamiliar = document.getElementById('codigoFamiliar').value.trim();
+  const nis = document.getElementById('nis').value.trim();
+  const dataExclusao = document.getElementById('dataExclusao').value;
+  const nomePessoa = document.getElementById('nomePessoa').value.trim();
+  const nisPessoa = document.getElementById('nisPessoa').value.trim();
+  const motivoEl = document.querySelector('input[name="motivo"]:checked');
+
+  const msgErro = document.getElementById('msgErro');
+
+  if(!codigoFamiliar || !nis || !dataExclusao || !nomePessoa || !nisPessoa || !motivoEl){
+    msgErro.style.display = 'block';
+    return;
+  }
+  msgErro.style.display = 'none';
+
+  const motivo = motivoEl.value;
+  const dataHojeBR = formatarDataBR(hojeISO());
+
+  const opcoes = [
+    "Falecimento da Pessoa",
+    "Desligamento da Pessoa daquela Família em que está cadastrada",
+    "Solicitação da Própria Pessoa",
+    "Decisão Judicial"
+  ];
+
+  const linhasMotivo = opcoes.map(op => `
+      <div class="motivo-linha">
+        <span class="caixa">(${marcarMotivo(motivo, op)})</span> ${op}${op === opcoes[opcoes.length-1] ? '.' : ';'}
+      </div>`).join('');
+
+  const html = `
+    <div class="cabecalho">
+      <img src="${LOGO_SRC}" alt="Logo CRAS">
+      <div class="titulos">
+        <div class="t1">» Centro de Referência da Assistência Social «</div>
+        <div class="t2">"CRAS DO PARQUE"</div>
+      </div>
+    </div>
+
+    <div class="ficha-titulo">Ficha de Exclusão de Pessoa do Cadastro Único</div>
+
+    <div class="campo-linha">
+      <span class="rotulo">Código Familiar:</span>
+      <span class="valor">${codigoFamiliar}</span>
+    </div>
+    <div class="campo-linha">
+      <span class="rotulo">NIS do Responsável pela Unidade Familiar:</span>
+      <span class="valor">${nis}</span>
+    </div>
+    <div class="campo-linha">
+      <span class="rotulo">Data da Exclusão:</span>
+      <span class="valor">${formatarDataBR(dataExclusao)}</span>
+    </div>
+    <div class="campo-linha">
+      <span class="rotulo">Nome da Pessoa:</span>
+      <span class="valor">${nomePessoa}</span>
+    </div>
+    <div class="campo-linha">
+      <span class="rotulo">NIS da Pessoa:</span>
+      <span class="valor">${nisPessoa}</span>
+    </div>
+
+    <div class="motivos-titulo">MOTIVOS DA EXCLUSÃO:</div>
+    ${linhasMotivo}
+
+    <div class="rodape-local">
+      <div><strong>Local:</strong> MANDURI</div>
+      <div><strong>Data:</strong> ${dataHojeBR}</div>
+    </div>
+
+    <div class="assinaturas">
+      <div class="assinatura">
+        <div class="linha">&nbsp;</div>
+        Assinatura do RF
+      </div>
+      <div class="assinatura">
+        <div class="linha">&nbsp;</div>
+        Assinatura do Entrevistador
+      </div>
+    </div>
+
+    <div class="rodape-endereco">
+      Rua Carlos Eduardo Justo, 210 – CDHU – Manduri – SP – CEP. 18.780.000 – Fone (14) 3356-9215<br>
+      www.manduri.sp.gov.br - e-mail – cras@manduri.sp.gov.br
+    </div>
+  `;
+
+  document.getElementById('fichaConteudo').innerHTML = html;
+  document.getElementById('btnImprimir').disabled = false;
+}
+
+function limparFormulario(){
+  document.getElementById('codigoFamiliar').value = '';
+  document.getElementById('nis').value = '';
+  document.getElementById('dataExclusao').value = '';
+  document.getElementById('nomePessoa').value = '';
+  document.getElementById('nisPessoa').value = '';
+  const checked = document.querySelector('input[name="motivo"]:checked');
+  if(checked) checked.checked = false;
+  document.getElementById('msgErro').style.display = 'none';
+  document.getElementById('btnImprimir').disabled = true;
+  document.getElementById('fichaConteudo').innerHTML = `
+    <div class="placeholder-vazio">
+      Preencha o formulário ao lado e clique em <strong>"Gerar Ficha"</strong><br>
+      para visualizar o documento preenchido aqui.
+    </div>`;
+}
+
+document.getElementById('btnGerar').addEventListener('click', gerarFicha);
+document.getElementById('btnLimpar').addEventListener('click', limparFormulario);
+document.getElementById('btnImprimir').addEventListener('click', () => window.print());
+</script>
+
+</body>
+</html>

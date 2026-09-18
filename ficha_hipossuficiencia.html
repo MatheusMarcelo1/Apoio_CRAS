@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Declaração de Hipossuficiência</title>
+<style>
+  :root{
+    --bg:#f4f2ee;
+    --paper:#ffffff;
+    --ink:#1f1f1f;
+    --muted:#6b6b6b;
+    --accent:#7a5c3e;
+    --accent-dark:#5c4530;
+    --border:#d8d2c6;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#1b1a18;
+      --paper:#242320;
+      --ink:#ececec;
+      --muted:#a8a29a;
+      --accent:#c79b6e;
+      --accent-dark:#e0b98c;
+      --border:#3a3833;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#1b1a18;
+    --paper:#242320;
+    --ink:#ececec;
+    --muted:#a8a29a;
+    --accent:#c79b6e;
+    --accent-dark:#e0b98c;
+    --border:#3a3833;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Georgia","Times New Roman",serif;
+    min-height:100vh;
+    padding:32px 16px;
+  }
+  .wrap{
+    max-width:1100px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:28px;
+  }
+  @media (max-width:860px){
+    .wrap{grid-template-columns:1fr;}
+  }
+
+  h1{
+    font-size:1.4rem;
+    letter-spacing:.03em;
+    margin:0 0 4px;
+    font-weight:700;
+  }
+  .subtitle{
+    color:var(--muted);
+    font-size:.9rem;
+    margin:0 0 20px;
+    font-family:Arial, sans-serif;
+  }
+
+  .panel{
+    background:var(--paper);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:24px;
+  }
+
+  form{
+    font-family:Arial, Helvetica, sans-serif;
+  }
+  label{
+    display:block;
+    font-size:.82rem;
+    color:var(--muted);
+    margin:14px 0 5px;
+  }
+  label:first-of-type{margin-top:0;}
+  input, select{
+    width:100%;
+    padding:10px 12px;
+    border:1px solid var(--border);
+    border-radius:6px;
+    background:var(--bg);
+    color:var(--ink);
+    font-size:.95rem;
+    font-family:Arial, sans-serif;
+  }
+  input:focus, select:focus{
+    outline:2px solid var(--accent);
+    outline-offset:1px;
+  }
+  .row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  .row3{
+    display:grid;
+    grid-template-columns:2fr 1fr 1fr;
+    gap:12px;
+  }
+
+  .actions{
+    margin-top:22px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  button{
+    font-family:Arial, sans-serif;
+    font-size:.9rem;
+    font-weight:600;
+    padding:11px 18px;
+    border-radius:6px;
+    border:1px solid var(--accent);
+    background:var(--accent);
+    color:#fff;
+    cursor:pointer;
+  }
+  button.secondary{
+    background:transparent;
+    color:var(--accent-dark);
+  }
+  button:hover{opacity:.9;}
+
+  .hint{
+    font-size:.78rem;
+    color:var(--muted);
+    margin-top:6px;
+  }
+
+  /* Document preview */
+  #docPage{
+    background:var(--paper);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:48px 44px;
+    min-height:520px;
+    color:var(--ink);
+    line-height:1.7;
+    position:sticky;
+    top:24px;
+    align-self:start;
+  }
+  #docPage h2{
+    text-align:center;
+    font-size:1.15rem;
+    letter-spacing:.04em;
+    margin:0 0 30px;
+  }
+  #docPage p{
+    margin:0 0 16px;
+    text-align:justify;
+  }
+  .blank{
+    border-bottom:1px solid var(--ink);
+    padding:0 2px;
+  }
+  .sign-date{
+    text-align:right;
+    margin-top:36px;
+  }
+  .sign-block{
+    margin-top:70px;
+    text-align:center;
+  }
+  .sign-line{
+    border-top:1px solid var(--ink);
+    width:70%;
+    margin:0 auto 6px;
+  }
+  .sign-label{
+    font-size:.85rem;
+  }
+
+  @media print{
+    @page{size:A4; margin:0;}
+    body{background:#fff; padding:0;}
+    .wrap{display:block;}
+    #formColumn{display:none !important;}
+    #docPage{
+      border:none;
+      border-radius:0;
+      box-shadow:none;
+      position:static;
+      padding:32mm 24mm 26mm;
+      min-height:297mm;
+      line-height:2;
+    }
+    #docPage h2{margin-bottom:38px;}
+    #docPage p{margin-bottom:24px;}
+    #docPage .sign-date{margin-top:52px;}
+    #docPage .sign-block{margin-top:100px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div id="formColumn">
+    <h1>Gerador de Declaração de Hipossuficiência</h1>
+    <p class="subtitle">Preencha os dados abaixo. O documento ao lado é atualizado automaticamente.</p>
+
+    <div class="panel">
+      <form id="form" onsubmit="return false;">
+        <label for="nome">Nome completo</label>
+        <input type="text" id="nome" placeholder="Ex: João da Silva">
+
+        <label for="rua">Rua/Avenida</label>
+        <input type="text" id="rua" placeholder="Ex: Rua das Flores">
+
+        <div class="row3">
+          <div>
+            <label for="numero">Número</label>
+            <input type="text" id="numero" placeholder="Ex: 123">
+          </div>
+          <div>
+            <label for="bairro">Bairro</label>
+            <input type="text" id="bairro" placeholder="Ex: Centro">
+          </div>
+          <div>
+            <label for="rg">RG</label>
+            <input type="text" id="rg" placeholder="Ex: 00.000.000-0">
+          </div>
+        </div>
+
+        <label for="cidade">Cidade/UF (local da assinatura)</label>
+        <input type="text" id="cidade" value="Manduri/SP">
+
+        <label for="dataAssinatura">Data da assinatura</label>
+        <input type="date" id="dataAssinatura">
+        <p class="hint">Preenchida automaticamente com a data de hoje — pode ser alterada.</p>
+
+        <div class="actions">
+          <button id="btnImprimir" type="button">🖨️ Imprimir / Salvar como PDF</button>
+          <button id="btnLimpar" type="button" class="secondary">Limpar campos</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="docPage">
+    <h2>DECLARAÇÃO DE HIPOSSUFICIÊNCIA</h2>
+
+    <p>
+      Eu <span class="blank" id="outNome">________________________________</span>,
+      Brasileiro(a), residente e domiciliado(a) na
+      <span class="blank" id="outRua">_______________________</span>,
+      Nº <span class="blank" id="outNumero">______</span>,
+      bairro <span class="blank" id="outBairro">_______________________</span>,
+      portador(a) do RG <span class="blank" id="outRg">_______________________</span>.
+    </p>
+
+    <p>
+      Outrossim, declaro que sou reconhecidamente pobre, sem recursos financeiros para pagar as
+      custas previstas da Lei nos termos do Artigo 30 da Lei 6.015/1973 e 9.534 de 10 de dezembro de 1997.
+    </p>
+
+    <p>
+      E por ser expressão da verdade, assina o presente em duas vias para fins da Lei 10.199 de 30 de dezembro de 1998.
+    </p>
+
+    <p class="sign-date" id="outDataLinha">Manduri/SP, ____ de ______________ de 20____</p>
+
+    <div class="sign-block">
+      <div class="sign-line"></div>
+      <div class="sign-label">Responsável pela Declaração</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const meses = ["janeiro","fevereiro","março","abril","maio","junho",
+  "julho","agosto","setembro","outubro","novembro","dezembro"];
+
+const nome = document.getElementById('nome');
+const rua = document.getElementById('rua');
+const numero = document.getElementById('numero');
+const bairro = document.getElementById('bairro');
+const rg = document.getElementById('rg');
+const cidade = document.getElementById('cidade');
+const dataAssinatura = document.getElementById('dataAssinatura');
+
+const outNome = document.getElementById('outNome');
+const outRua = document.getElementById('outRua');
+const outNumero = document.getElementById('outNumero');
+const outBairro = document.getElementById('outBairro');
+const outRg = document.getElementById('outRg');
+const outDataLinha = document.getElementById('outDataLinha');
+
+function placeholderOr(value, ph){
+  return value && value.trim() !== '' ? value.trim() : ph;
+}
+
+function formatDataLinha(){
+  const local = placeholderOr(cidade.value, 'Manduri/SP');
+  let dia = '____', mesNome = '______________', ano = '20____';
+  if(dataAssinatura.value){
+    const [y, m, d] = dataAssinatura.value.split('-');
+    dia = String(parseInt(d,10));
+    mesNome = meses[parseInt(m,10)-1];
+    ano = y;
+  }
+  return `${local}, ${dia} de ${mesNome} de ${ano}`;
+}
+
+function render(){
+  outNome.textContent = placeholderOr(nome.value, '________________________________');
+  outRua.textContent = placeholderOr(rua.value, '_______________________');
+  outNumero.textContent = placeholderOr(numero.value, '______');
+  outBairro.textContent = placeholderOr(bairro.value, '_______________________');
+  outRg.textContent = placeholderOr(rg.value, '_______________________');
+  outDataLinha.textContent = formatDataLinha();
+}
+
+[nome, rua, numero, bairro, rg, cidade, dataAssinatura].forEach(el=>{
+  el.addEventListener('input', render);
+});
+
+document.getElementById('btnImprimir').addEventListener('click', ()=>window.print());
+
+document.getElementById('btnLimpar').addEventListener('click', ()=>{
+  [nome, rua, numero, bairro, rg].forEach(el=>el.value = '');
+  cidade.value = 'Manduri/SP';
+  setToday();
+  render();
+});
+
+function setToday(){
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth()+1).padStart(2,'0');
+  const d = String(now.getDate()).padStart(2,'0');
+  dataAssinatura.value = `${y}-${m}-${d}`;
+}
+
+setToday();
+render();
+</script>
+
+</body>
+</html>
