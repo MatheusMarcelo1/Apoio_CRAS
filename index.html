@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Orquestrador de Ferramentas · CRAS Manduri</title>
+  <title>Gerador de Documentos CRAS · CRAS Manduri</title>
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 </head>
 <body>
   <header class="app-header">
     <div class="brand">
       <img src="logo_cras.png" alt="Logo do CRAS">
       <div>
-        <strong>Orquestrador CRAS</strong>
+        <strong>Gerador de Documentos CRAS</strong>
         <span>Centro de Referência de Assistência Social · Manduri/SP</span>
       </div>
     </div>
@@ -41,6 +42,10 @@
       <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="panel-formatador" data-tool="formatador">
         <span aria-hidden="true">🔤</span>
         Formatar pastas
+      </button>
+      <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="panel-beneficiarios" data-tool="beneficiarios">
+        <span aria-hidden="true">📊</span>
+        Lista de beneficiários
       </button>
     </nav>
 
@@ -73,9 +78,36 @@
         <ul class="rename-log" id="rename-log" aria-live="polite"></ul>
       </div>
     </section>
+    <section id="panel-beneficiarios" class="tool-panel formatter-panel" role="tabpanel" hidden>
+      <div class="formatter-card beneficiary-tool">
+        <div class="formatter-icon" aria-hidden="true">CSV</div>
+        <div>
+          <p class="eyebrow">Relatório mensal</p>
+          <h2>Formatar lista de beneficiários</h2>
+          <p>Selecione o CSV mensal. A ferramenta manterá CPF, nome, valor total e situação, removerá valores zerados, ordenará os nomes e criará um XLSX pronto para impressão em A4.</p>
+        </div>
+        <div class="beneficiary-actions">
+          <button class="primary-button" id="select-beneficiary-csv" type="button">Selecionar CSV</button>
+          <button class="secondary-button" id="save-beneficiary-xlsx" type="button" disabled>Salvar como XLSX (Documento Excel)</button>
+        </div>
+        <div class="beneficiary-options" style="margin-top: 8px;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="checkbox" id="beneficiary-show-nis" value="1"> Exibir NIS em vez de CPF
+          </label>
+        </div>
+        <input id="beneficiary-csv-input" type="file" accept=".csv,text/csv" hidden>
+        <div class="progress-area" id="beneficiary-status" aria-live="polite">Nenhum CSV selecionado.</div>
+        <div class="beneficiary-preview" id="beneficiary-preview" hidden>
+          <strong>Prévia da tabela formatada</strong>
+          <div class="table-scroll">
+            <table id="beneficiary-table"></table>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <footer>Orquestrador CRAS · Manduri/SP</footer>
+  <footer>Gerador de Documentos CRAS · Manduri/SP</footer>
   <script src="app.js"></script>
 </body>
 </html>

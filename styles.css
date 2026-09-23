@@ -75,6 +75,14 @@ button:disabled { cursor: not-allowed; opacity: .5; }
 .progress-area { margin-top: 26px; padding: 14px; border-radius: 8px; color: var(--muted); background: #f7f2eb; }
 .rename-log { max-height: 220px; margin: 12px 0 0; padding: 0 0 0 20px; overflow: auto; color: var(--muted); font-size: .88rem; }
 .rename-log li { margin: 4px 0; }
+.beneficiary-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0; }
+.beneficiary-actions .secondary-button { margin-left: 0; }
+.beneficiary-preview { margin-top: 22px; padding: 18px; border: 1px solid var(--border); border-radius: 12px; background: #fafafa; }
+.table-scroll { margin-top: 12px; overflow-x: auto; }
+.beneficiary-preview table { width: 100%; min-width: 680px; border-collapse: collapse; color: #242424; background: #fff; font-size: .88rem; }
+.beneficiary-preview th, .beneficiary-preview td { padding: 9px 11px; border: 1px solid #d5d5d5; text-align: left; white-space: nowrap; }
+.beneficiary-preview th { color: #333; background: #e9e9e9; font-weight: 800; }
+.beneficiary-preview td:nth-child(3) { text-align: right; }
 footer { padding: 18px; color: var(--muted); font-size: .82rem; text-align: center; }
 
 @media (max-width: 680px) {
@@ -83,6 +91,7 @@ footer { padding: 18px; color: var(--muted); font-size: .82rem; text-align: cent
   .app-shell { padding: 28px 12px 42px; }
   .tool-panel iframe { min-height: 1100px; }
   .secondary-button { margin: 10px 0 0; }
+  .beneficiary-actions { align-items: stretch; flex-direction: column; }
 }
 
 @media print {
