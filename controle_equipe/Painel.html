@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      color: #1f2937;
+      overflow-x: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: white;
+      padding: 20px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .header p {
+      margin: 5px 0 0;
+      font-size: 12px;
+      opacity: .85;
+    }
+
+    /*
+     * MENU EM GRADE
+     *
+     * Agora os botões ficam todos visíveis,
+     * sem barra de rolagem horizontal.
+     */
+    .menu {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 10px;
+      background: white;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .menu button {
+      border: 1px solid #dbeafe;
+      background: #eef2ff;
+      color: #1e3a8a;
+      padding: 11px 7px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: bold;
+      min-height: 42px;
+    }
+
+    .menu button:hover {
+      background: #dbeafe;
+    }
+
+    .menu button.relatorio {
+      grid-column: 1 / -1;
+      background: #e0e7ff;
+      color: #312e81;
+    }
+
+    .conteudo {
+      padding: 15px;
+    }
+
+    .secao {
+      display: none;
+    }
+
+    .secao.ativa {
+      display: block;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      margin-bottom: 15px;
+    }
+
+    .titulo {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 14px;
+      color: #1e3a8a;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #4b5563;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 9px;
+      font-size: 13px;
+      background: white;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px rgba(37,99,235,.12);
+    }
+
+    .campo {
+      margin-bottom: 12px;
+    }
+
+    .linha {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .linha-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .botao {
+      width: 100%;
+      border: none;
+      border-radius: 9px;
+      padding: 11px;
+      background: #2563eb;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+
+    .botao:hover {
+      background: #1d4ed8;
+    }
+
+    .botao.verde {
+      background: #16a34a;
+    }
+
+    .botao.verde:hover {
+      background: #15803d;
+    }
+
+    .botao.roxo {
+      background: #4f46e5;
+    }
+
+    .botao.roxo:hover {
+      background: #4338ca;
+    }
+
+    .status {
+      display: none;
+      margin-bottom: 12px;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 12px;
+    }
+
+    .status.sucesso {
+      display: block;
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status.erro {
+      display: block;
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .horarios {
+      background: #eff6ff;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 12px;
+      font-size: 12px;
+      color: #1e40af;
+    }
+
+    .info {
+      background: #eff6ff;
+      border-left: 4px solid #2563eb;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    .info-atestado {
+      background: #fff7d6;
+      border-left: 4px solid #eab308;
+      color: #713f12;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    .carregando {
+      color: #6b7280;
+      font-size: 12px;
+      padding: 10px 0;
+    }
+
+    @media(max-width: 400px) {
+
+      .linha,
+      .linha-4 {
+        grid-template-columns: 1fr;
+      }
+
+      .menu {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .menu button {
+        font-size: 11px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>Controle de Ponto</h1>
+    <p>Gestão de ocorrências, horários, férias e relatório</p>
+  </div>
+
+
+  <!-- MENU PRINCIPAL -->
+
+  <div class="menu">
+
+    <button onclick="mostrarSecao('ocorrencia')">
+      ➕ Ocorrência
+    </button>
+
+    <button onclick="mostrarSecao('horario')">
+      ✏️ Horário
+    </button>
+
+    <button onclick="mostrarSecao('ferias')">
+      🏖️ Férias
+    </button>
+
+    <button onclick="mostrarSecao('mes')">
+      📅 Mês
+    </button>
+
+    <button
+      class="relatorio"
+      onclick="abrirRelatorio()">
+      📊 Relatório
+    </button>
+
+  </div>
+
+
+  <div class="conteudo">
+
+    <div id="status" class="status"></div>
+
+
+    <!-- ================================================== -->
+    <!-- OCORRÊNCIA -->
+    <!-- ================================================== -->
+
+    <div id="ocorrencia" class="secao ativa">
+
+      <div class="card">
+
+        <div class="titulo">
+          ➕ Registrar ocorrência
+        </div>
+
+        <div class="info">
+          O ponto normal não precisa ser lançado manualmente.
+          Registre aqui somente quando houver algum problema
+          ou alteração.
+        </div>
+
+        <div class="info-atestado">
+          <strong>Atestado:</strong>
+          ao selecionar esta opção, o sistema marcará
+          automaticamente todos os horários do funcionário
+          naquele dia como atestado.
+        </div>
+
+        <div class="campo">
+
+          <label>Funcionário</label>
+
+          <select
+            id="oc_funcionario"
+            onchange="atualizarHorariosOcorrencia()">
+
+            <option value="">
+              Carregando funcionários...
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="linha">
+
+          <div class="campo">
+
+            <label>Data</label>
+
+            <input
+              type="date"
+              id="oc_data">
+
+          </div>
+
+
+          <div class="campo">
+
+            <label>Registro</label>
+
+            <select id="oc_registro">
+
+              <option value="">
+                Selecione o funcionário
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <div class="campo">
+
+          <label>Situação</label>
+
+          <select
+            id="oc_situacao"
+            onchange="mostrarCampoHorario()">
+
+            <option value="Não registrou o ponto">
+              Não registrou o ponto
+            </option>
+
+            <option value="Horário diferente">
+              Horário diferente
+            </option>
+
+            <option value="Atestado">
+              Atestado
+            </option>
+
+            <option value="Outro">
+              Outro
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div
+          class="campo"
+          id="campo_horario"
+          style="display:none;">
+
+          <label>Horário informado</label>
+
+          <input
+            type="time"
+            id="oc_horario">
+
+        </div>
+
+
+        <div class="campo">
+
+          <label>Motivo</label>
+
+          <textarea
+            id="oc_motivo"
+            placeholder="Ex.: Apresentou atestado médico"></textarea>
+
+        </div>
+
+
+        <div class="campo">
+
+          <label>Observação</label>
+
+          <textarea
+            id="oc_observacao"
+            placeholder="Informações adicionais (opcional)"></textarea>
+
+        </div>
+
+
+        <button
+          class="botao"
+          onclick="salvarOcorrencia()">
+
+          💾 Salvar ocorrência
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- ================================================== -->
+    <!-- HORÁRIO -->
+    <!-- ================================================== -->
+
+    <div id="horario" class="secao">
+
+      <div class="card">
+
+        <div class="titulo">
+          ✏️ Alterar horário padrão
+        </div>
+
+        <div class="campo">
+
+          <label>Funcionário</label>
+
+          <select
+            id="hr_funcionario"
+            onchange="carregarHorarioFuncionario()">
+
+            <option value="">
+              Carregando funcionários...
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div
+          id="horario_atual"
+          class="horarios">
+
+          Selecione um funcionário.
+
+        </div>
+
+
+        <div class="linha-4">
+
+          <div class="campo">
+
+            <label>Entrada</label>
+
+            <input
+              type="time"
+              id="hr_entrada">
+
+          </div>
+
+
+          <div class="campo">
+
+            <label>Saída 1</label>
+
+            <input
+              type="time"
+              id="hr_saida1">
+
+          </div>
+
+
+          <div class="campo">
+
+            <label>Entrada 2</label>
+
+            <input
+              type="time"
+              id="hr_entrada2">
+
+          </div>
+
+
+          <div class="campo">
+
+            <label>Saída 2</label>
+
+            <input
+              type="time"
+              id="hr_saida2">
+
+          </div>
+
+        </div>
+
+
+        <button
+          class="botao"
+          onclick="salvarHorario()">
+
+          💾 Salvar horário
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- ================================================== -->
+    <!-- FÉRIAS -->
+    <!-- ================================================== -->
+
+    <div id="ferias" class="secao">
+
+      <div class="card">
+
+        <div class="titulo">
+          🏖️ Registrar férias
+        </div>
+
+        <div class="campo">
+
+          <label>Funcionário</label>
+
+          <select id="fe_funcionario">
+
+            <option value="">
+              Carregando funcionários...
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="linha">
+
+          <div class="campo">
+
+            <label>Início</label>
+
+            <input
+              type="date"
+              id="fe_inicio">
+
+          </div>
+
+
+          <div class="campo">
+
+            <label>Fim</label>
+
+            <input
+              type="date"
+              id="fe_fim">
+
+          </div>
+
+        </div>
+
+
+        <div class="campo">
+
+          <label>Observação</label>
+
+          <textarea
+            id="fe_observacao"
+            placeholder="Observação opcional"></textarea>
+
+        </div>
+
+
+        <button
+          class="botao verde"
+          onclick="salvarFerias()">
+
+          🏖️ Salvar férias
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- ================================================== -->
+    <!-- MÊS -->
+    <!-- ================================================== -->
+
+    <div id="mes" class="secao">
+
+      <div class="card">
+
+        <div class="titulo">
+          📅 Gerar / atualizar mês
+        </div>
+
+
+        <div class="linha">
+
+          <div class="campo">
+
+            <label>Mês</label>
+
+            <select id="mes_selecionado">
+
+              <option value="1">Janeiro</option>
+              <option value="2">Fevereiro</option>
+              <option value="3">Março</option>
+              <option value="4">Abril</option>
+              <option value="5">Maio</option>
+              <option value="6">Junho</option>
+              <option value="7">Julho</option>
+              <option value="8">Agosto</option>
+              <option value="9">Setembro</option>
+              <option value="10">Outubro</option>
+              <option value="11">Novembro</option>
+              <option value="12">Dezembro</option>
+
+            </select>
+
+          </div>
+
+
+          <div class="campo">
+
+            <label>Ano</label>
+
+            <input
+              type="number"
+              id="ano_selecionado"
+              min="2000"
+              max="2100"
+              step="1"
+              placeholder="Ex.: 2026">
+
+          </div>
+
+        </div>
+
+
+        <button
+          class="botao"
+          onclick="gerarMes()">
+
+          📅 Gerar / atualizar mês
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+<script>
+
+  let funcionarios = [];
+
+
+  /* ======================================================
+   * INICIALIZAÇÃO
+   * ====================================================== */
+
+  window.onload = function() {
+
+    mostrarStatus(
+      "Carregando sistema...",
+      "sucesso"
+    );
+
+    google.script.run
+      .withSuccessHandler(inicializar)
+      .withFailureHandler(function(erro) {
+
+        mostrarStatus(
+          "Erro ao carregar o sistema: " +
+          erro.message,
+          "erro"
+        );
+
+      })
+      .getDadosIniciais();
+
+  };
+
+
+  /* ======================================================
+   * INICIALIZAR
+   * ====================================================== */
+
+  function inicializar(dados) {
+
+    funcionarios =
+      dados.funcionarios || [];
+
+
+    document.getElementById(
+      "ano_selecionado"
+    ).value =
+      dados.anoAtual ||
+      new Date().getFullYear();
+
+
+    document.getElementById(
+      "mes_selecionado"
+    ).value =
+      dados.mesAtual ||
+      new Date().getMonth() + 1;
+
+
+    const hoje =
+      new Date();
+
+
+    document.getElementById(
+      "oc_data"
+    ).value =
+      formatarDataInput(hoje);
+
+
+    preencherFuncionarios();
+
+    atualizarHorariosOcorrencia();
+
+    carregarHorarioFuncionario();
+
+
+    mostrarStatus(
+      funcionarios.length +
+      " funcionário(s) carregado(s).",
+      "sucesso"
+    );
+  }
+
+
+  /* ======================================================
+   * FUNCIONÁRIOS
+   * ====================================================== */
+
+  function preencherFuncionarios() {
+
+    const selects = [
+
+      document.getElementById(
+        "oc_funcionario"
+      ),
+
+      document.getElementById(
+        "hr_funcionario"
+      ),
+
+      document.getElementById(
+        "fe_funcionario"
+      )
+
+    ];
+
+
+    selects.forEach(function(select) {
+
+      select.innerHTML = "";
+
+
+      const primeiraOpcao =
+        document.createElement("option");
+
+      primeiraOpcao.value = "";
+
+      primeiraOpcao.textContent =
+        "Selecione o funcionário";
+
+      select.appendChild(
+        primeiraOpcao
+      );
+
+
+      funcionarios.forEach(function(funcionario) {
+
+        const option =
+          document.createElement("option");
+
+        option.value =
+          funcionario.nome;
+
+        option.textContent =
+          funcionario.nome;
+
+        select.appendChild(
+          option
+        );
+
+      });
+
+    });
+  }
+
+
+  /* ======================================================
+   * HORÁRIOS DA OCORRÊNCIA
+   * ====================================================== */
+
+  function atualizarHorariosOcorrencia() {
+
+    const nome =
+      document.getElementById(
+        "oc_funcionario"
+      ).value;
+
+
+    const select =
+      document.getElementById(
+        "oc_registro"
+      );
+
+
+    select.innerHTML = "";
+
+
+    if (!nome) {
+
+      const option =
+        document.createElement("option");
+
+      option.value = "";
+
+      option.textContent =
+        "Selecione o funcionário";
+
+      select.appendChild(
+        option
+      );
+
+      return;
+    }
+
+
+    const funcionario =
+      funcionarios.find(function(f) {
+
+        return f.nome === nome;
+
+      });
+
+
+    if (!funcionario) {
+      return;
+    }
+
+
+    const horarios = [];
+
+
+    if (funcionario.entrada) {
+
+      horarios.push({
+        nome: "Entrada",
+        horario: funcionario.entrada
+      });
+
+    }
+
+
+    if (funcionario.saida1) {
+
+      horarios.push({
+        nome: "Saída 1",
+        horario: funcionario.saida1
+      });
+
+    }
+
+
+    if (funcionario.entrada2) {
+
+      horarios.push({
+        nome: "Entrada 2",
+        horario: funcionario.entrada2
+      });
+
+    }
+
+
+    if (funcionario.saida2) {
+
+      horarios.push({
+        nome: "Saída 2",
+        horario: funcionario.saida2
+      });
+
+    }
+
+
+    horarios.forEach(function(item) {
+
+      const option =
+        document.createElement("option");
+
+      option.value =
+        item.nome;
+
+      option.textContent =
+        item.nome +
+        " — " +
+        item.horario;
+
+      select.appendChild(
+        option
+      );
+
+    });
+  }
+
+
+  /* ======================================================
+   * CARREGAR HORÁRIO
+   * ====================================================== */
+
+  function carregarHorarioFuncionario() {
+
+    const nome =
+      document.getElementById(
+        "hr_funcionario"
+      ).value;
+
+
+    const atual =
+      document.getElementById(
+        "horario_atual"
+      );
+
+
+    if (!nome) {
+
+      atual.textContent =
+        "Selecione um funcionário.";
+
+      limparCamposHorario();
+
+      return;
+    }
+
+
+    const funcionario =
+      funcionarios.find(function(f) {
+
+        return f.nome === nome;
+
+      });
+
+
+    if (!funcionario) {
+      return;
+    }
+
+
+    document.getElementById(
+      "hr_entrada"
+    ).value =
+      funcionario.entrada || "";
+
+
+    document.getElementById(
+      "hr_saida1"
+    ).value =
+      funcionario.saida1 || "";
+
+
+    document.getElementById(
+      "hr_entrada2"
+    ).value =
+      funcionario.entrada2 || "";
+
+
+    document.getElementById(
+      "hr_saida2"
+    ).value =
+      funcionario.saida2 || "";
+
+
+    const partes = [];
+
+
+    if (funcionario.entrada)
+      partes.push(
+        "Entrada " +
+        funcionario.entrada
+      );
+
+
+    if (funcionario.saida1)
+      partes.push(
+        "Saída 1 " +
+        funcionario.saida1
+      );
+
+
+    if (funcionario.entrada2)
+      partes.push(
+        "Entrada 2 " +
+        funcionario.entrada2
+      );
+
+
+    if (funcionario.saida2)
+      partes.push(
+        "Saída 2 " +
+        funcionario.saida2
+      );
+
+
+    atual.textContent =
+      "Horário atual: " +
+      partes.join(" • ");
+  }
+
+
+  function limparCamposHorario() {
+
+    document.getElementById(
+      "hr_entrada"
+    ).value = "";
+
+    document.getElementById(
+      "hr_saida1"
+    ).value = "";
+
+    document.getElementById(
+      "hr_entrada2"
+    ).value = "";
+
+    document.getElementById(
+      "hr_saida2"
+    ).value = "";
+  }
+
+
+  /* ======================================================
+   * MOSTRAR CAMPO HORÁRIO
+   * ====================================================== */
+
+  function mostrarCampoHorario() {
+
+    const situacao =
+      document.getElementById(
+        "oc_situacao"
+      ).value;
+
+
+    const campo =
+      document.getElementById(
+        "campo_horario"
+      );
+
+
+    campo.style.display =
+      situacao === "Horário diferente"
+        ? "block"
+        : "none";
+  }
+
+
+  /* ======================================================
+   * SALVAR OCORRÊNCIA
+   * ====================================================== */
+
+  function salvarOcorrencia() {
+
+    const dados = {
+
+      funcionario:
+        document.getElementById(
+          "oc_funcionario"
+        ).value,
+
+      data:
+        document.getElementById(
+          "oc_data"
+        ).value,
+
+      registro:
+        document.getElementById(
+          "oc_registro"
+        ).value,
+
+      situacao:
+        document.getElementById(
+          "oc_situacao"
+        ).value,
+
+      horario:
+        document.getElementById(
+          "oc_horario"
+        ).value,
+
+      motivo:
+        document.getElementById(
+          "oc_motivo"
+        ).value,
+
+      observacao:
+        document.getElementById(
+          "oc_observacao"
+        ).value
+    };
+
+
+    if (!dados.funcionario) {
+
+      mostrarStatus(
+        "Selecione um funcionário.",
+        "erro"
+      );
+
+      return;
+    }
+
+
+    if (!dados.data) {
+
+      mostrarStatus(
+        "Informe a data.",
+        "erro"
+      );
+
+      return;
+    }
+
+
+    if (!dados.registro) {
+
+      mostrarStatus(
+        "Selecione o registro.",
+        "erro"
+      );
+
+      return;
+    }
+
+
+    if (!dados.motivo) {
+
+      mostrarStatus(
+        "Informe o motivo.",
+        "erro"
+      );
+
+      return;
+    }
+
+
+    mostrarStatus(
+      dados.situacao === "Atestado"
+        ? "Registrando atestado para o dia inteiro..."
+        : "Salvando ocorrência...",
+      "sucesso"
+    );
+
+
+    google.script.run
+      .withSuccessHandler(function(resposta) {
+
+        mostrarStatus(
+          resposta ||
+          "Ocorrência salva com sucesso!",
+          "sucesso"
+        );
+
+
+        document.getElementById(
+          "oc_motivo"
+        ).value = "";
+
+
+        document.getElementById(
+          "oc_observacao"
+        ).value = "";
+
+
+        document.getElementById(
+          "oc_horario"
+        ).value = "";
+
+
+        document.getElementById(
+          "oc_situacao"
+        ).value =
+          "Não registrou o ponto";
+
+
+        mostrarCampoHorario();
+
+      })
+      .withFailureHandler(function(erro) {
+
+        mostrarStatus(
+          "Erro: " +
+          erro.message,
+          "erro"
+        );
+
+      })
+      .salvarOcorrencia(dados);
+  }
+
+
+  /* ======================================================
+   * SALVAR HORÁRIO
+   * ====================================================== */
+
+  function salvarHorario() {
+
+    const dados = {
+
+      funcionario:
+        document.getElementById(
+          "hr_funcionario"
+        ).value,
+
+      entrada:
+        document.getElementById(
+          "hr_entrada"
+        ).value,
+
+      saida1:
+        document.getElementById(
+          "hr_saida1"
+        ).value,
+
+      entrada2:
+        document.getElementById(
+          "hr_entrada2"
+        ).value,
+
+      saida2:
+        document.getElementById(
+          "hr_saida2"
+        ).value
+
+    };
+
+
+    if (!dados.funcionario) {
+
+      mostrarStatus(
+        "Selecione um funcionário.",
+        "erro"
+      );
+
+      return;
+    }
+
+
+    google.script.run
+      .withSuccessHandler(function() {
+
+        mostrarStatus(
+          "Horário atualizado com sucesso!",
+          "sucesso"
+        );
+
+
+        const funcionario =
+          funcionarios.find(function(f) {
+
+            return f.nome ===
+              dados.funcionario;
+
+          });
+
+
+        if (funcionario) {
+
+          funcionario.entrada =
+            dados.entrada;
+
+          funcionario.saida1 =
+            dados.saida1;
+
+          funcionario.entrada2 =
+            dados.entrada2;
+
+          funcionario.saida2 =
+            dados.saida2;
+        }
+
+
+        atualizarHorariosOcorrencia();
+
+      })
+      .withFailureHandler(function(erro) {
+
+        mostrarStatus(
+          "Erro: " +
+          erro.message,
+          "erro"
+        );
+
+      })
+      .salvarHorario(dados);
+  }
+
+
+  /* ======================================================
+   * SALVAR FÉRIAS
+   * ====================================================== */
+
+  function salvarFerias() {
+
+    const dados = {
+
+      funcionario:
+        document.getElementById(
+          "fe_funcionario"
+        ).value,
+
+      inicio:
+        document.getElementById(
+          "fe_inicio"
+        ).value,
+
+      fim:
+        document.getElementById(
+          "fe_fim"
+        ).value,
+
+      observacao:
+        document.getElementById(
+          "fe_observacao"
+        ).value
+
+    };
+
+
+    if (!dados.funcionario) {
+
+      mostrarStatus(
+        "Selecione um funcionário.",
+        "erro"
+      );
+
+      return;
+    }
+
+
+    if (
+      !dados.inicio ||
+      !dados.fim
+    ) {
+
+      mostrarStatus(
+        "Informe o período de férias.",
+        "erro"
+      );
+
+      return;
+    }
+
+
+    google.script.run
+      .withSuccessHandler(function(resposta) {
+
+        mostrarStatus(
+          resposta ||
+          "Férias registradas!",
+          "sucesso"
+        );
+
+
+        document.getElementById(
+          "fe_observacao"
+        ).value = "";
+
+      })
+      .withFailureHandler(function(erro) {
+
+        mostrarStatus(
+          "Erro: " +
+          erro.message,
+          "erro"
+        );
+
+      })
+      .salvarFerias(dados);
+  }
+
+
+  /* ======================================================
+   * GERAR MÊS
+   * ====================================================== */
+
+  function gerarMes() {
+
+    const mes =
+      Number(
+        document.getElementById(
+          "mes_selecionado"
+        ).value
+      );
+
+
+    const ano =
+      Number(
+        document.getElementById(
+          "ano_selecionado"
+        ).value
+      );
+
+
+    if (
+      !ano ||
+      ano < 2000 ||
+      ano > 2100
+    ) {
+
+      mostrarStatus(
+        "Informe um ano válido, por exemplo 2026.",
+        "erro"
+      );
+
+      return;
+    }
+
+
+    mostrarStatus(
+      "Gerando mês...",
+      "sucesso"
+    );
+
+
+    google.script.run
+      .withSuccessHandler(function(resposta) {
+
+        mostrarStatus(
+          resposta ||
+          "Mês gerado com sucesso!",
+          "sucesso"
+        );
+
+      })
+      .withFailureHandler(function(erro) {
+
+        mostrarStatus(
+          "Erro: " +
+          erro.message,
+          "erro"
+        );
+
+      })
+      .gerarMes(
+        mes,
+        ano
+      );
+  }
+
+
+  /* ======================================================
+   * ABRIR RELATÓRIO
+   *
+   * O relatório fica na própria planilha.
+   * Aqui apenas levamos o usuário para a aba.
+   * ====================================================== */
+
+  function abrirRelatorio() {
+
+    mostrarStatus(
+      "Abrindo relatório...",
+      "sucesso"
+    );
+
+
+    google.script.run
+      .withSuccessHandler(function() {
+
+        mostrarStatus(
+          "Relatório atualizado.",
+          "sucesso"
+        );
+
+      })
+      .withFailureHandler(function(erro) {
+
+        mostrarStatus(
+          "Erro: " +
+          erro.message,
+          "erro"
+        );
+
+      })
+      .abrirAbaRelatorio();
+  }
+
+
+  /* ======================================================
+   * NAVEGAÇÃO
+   * ====================================================== */
+
+  function mostrarSecao(id) {
+
+    document
+      .querySelectorAll(".secao")
+      .forEach(function(secao) {
+
+        secao.classList.remove(
+          "ativa"
+        );
+
+      });
+
+
+    document
+      .getElementById(id)
+      .classList.add(
+        "ativa"
+      );
+  }
+
+
+  /* ======================================================
+   * STATUS
+   * ====================================================== */
+
+  function mostrarStatus(
+    texto,
+    tipo
+  ) {
+
+    const status =
+      document.getElementById(
+        "status"
+      );
+
+
+    status.textContent =
+      texto;
+
+
+    status.className =
+      "status " +
+      tipo;
+  }
+
+
+  /* ======================================================
+   * DATA
+   * ====================================================== */
+
+  function formatarDataInput(data) {
+
+    const ano =
+      data.getFullYear();
+
+
+    const mes =
+      String(
+        data.getMonth() + 1
+      ).padStart(
+        2,
+        "0"
+      );
+
+
+    const dia =
+      String(
+        data.getDate()
+      ).padStart(
+        2,
+        "0"
+      );
+
+
+    return (
+      ano +
+      "-" +
+      mes +
+      "-" +
+      dia
+    );
+  }
+
+</script>
+
+</body>
+</html>
