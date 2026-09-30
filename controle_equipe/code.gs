@@ -35,9 +35,7 @@ const APP = {
 };
 
 
-/************************************************************
- * MENU
- ************************************************************/
+
 
 function onOpen() {
 
@@ -51,10 +49,6 @@ function onOpen() {
 }
 
 
-/************************************************************
- * ABRIR PAINEL
- ************************************************************/
-
 function abrirPainel() {
 
   const html = HtmlService
@@ -64,11 +58,6 @@ function abrirPainel() {
   SpreadsheetApp.getUi()
     .showSidebar(html);
 }
-
-
-/************************************************************
- * CONFIGURAÇÃO INICIAL
- ************************************************************/
 
 function setupPlanilha() {
 
@@ -118,10 +107,6 @@ function setupPlanilha() {
 }
 
 
-/************************************************************
- * CABEÇALHOS DA CONFIG
- ************************************************************/
-
 function configurarCabecalhos_(sheet) {
 
   sheet.getRange('A1').setValue(
@@ -146,9 +131,6 @@ function configurarCabecalhos_(sheet) {
 }
 
 
-/************************************************************
- * FORMATAÇÃO DA CONFIG
- ************************************************************/
 
 function formatarConfig_(sheet) {
 
@@ -190,9 +172,6 @@ function formatarConfig_(sheet) {
 }
 
 
-/************************************************************
- * OBTER CONFIG
- ************************************************************/
 
 function getConfig_() {
 
@@ -215,9 +194,6 @@ function getConfig_() {
 }
 
 
-/************************************************************
- * FUNCIONÁRIOS
- ************************************************************/
 
 function getFuncionarios() {
 
@@ -268,9 +244,6 @@ function getFuncionarios() {
 }
 
 
-/************************************************************
- * NORMALIZAR HORÁRIO
- ************************************************************/
 
 function normalizarHorario_(valor) {
 
@@ -303,9 +276,6 @@ function normalizarHorario_(valor) {
 }
 
 
-/************************************************************
- * DADOS INICIAIS DO PAINEL
- ************************************************************/
 
 function getDadosIniciais() {
 
@@ -318,10 +288,6 @@ function getDadosIniciais() {
   };
 }
 
-
-/************************************************************
- * HORÁRIOS DE UM FUNCIONÁRIO
- ************************************************************/
 
 function getHorariosFuncionario_(nome) {
 
@@ -370,10 +336,6 @@ function getHorariosFuncionario_(nome) {
   return horarios;
 }
 
-
-/************************************************************
- * SALVAR HORÁRIO
- ************************************************************/
 
 function salvarHorario(dados) {
 
@@ -435,10 +397,6 @@ function salvarHorario(dados) {
 }
 
 
-/************************************************************
- * FÉRIAS
- ************************************************************/
-
 function salvarFerias(dados) {
 
   if (!dados.funcionario) {
@@ -473,10 +431,6 @@ function salvarFerias(dados) {
   return 'Férias registradas com sucesso.';
 }
 
-
-/************************************************************
- * LER FÉRIAS
- ************************************************************/
 
 function getFerias_() {
 
@@ -519,13 +473,6 @@ function getFerias_() {
 }
 
 
-/************************************************************
- * SALVAR OCORRÊNCIA
- *
- * ATESTADO:
- * Cria uma ocorrência para TODOS os horários
- * daquele funcionário naquele dia.
- ************************************************************/
 
 function salvarOcorrencia(dados) {
 
@@ -587,9 +534,6 @@ function salvarOcorrencia(dados) {
     getHorariosFuncionario_(dados.funcionario);
 
 
-  /**********************************************************
-   * ATESTADO = DIA INTEIRO
-   **********************************************************/
 
   if (dados.situacao === 'Atestado') {
 
@@ -614,12 +558,7 @@ function salvarOcorrencia(dados) {
       });
 
 
-    /*
-     * Cria uma ocorrência para cada horário.
-     *
-     * Isso é importante para que a aba mensal
-     * mostre ATESTADO em todos os horários.
-     */
+
     horarios.forEach(function(horario) {
 
       ocorrencias.push({
@@ -654,9 +593,7 @@ function salvarOcorrencia(dados) {
 
   } else {
 
-    /*
-     * OCORRÊNCIA NORMAL
-     */
+ 
 
     const horarioSelecionado =
       horarios.find(function(h) {
