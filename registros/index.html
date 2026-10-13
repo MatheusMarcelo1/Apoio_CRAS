@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CRAS · Ocorrências de ponto</title>
+<style>
+:root{--bg:#f3f5fb;--card:#fff;--ink:#1c2236;--mut:#6a7390;--line:#e3e7f1;--pri:#4f46e5;--pri-s:#eceeff;--r:14px}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.5 "Segoe UI",system-ui,-apple-system,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+svg.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px}
+header{display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:14px 28px;background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:12px;margin-right:auto}
+.logo{width:40px;height:40px;border-radius:12px;background:var(--pri);color:#fff;display:grid;place-items:center}
+.brand b{display:block;font-size:17px;line-height:1.1}.brand small{color:var(--mut)}
+.tabs{display:flex;gap:4px;background:var(--bg);padding:4px;border-radius:12px}
+.tabs button{border:0;background:none;padding:8px 16px;border-radius:9px;font:inherit;font-weight:600;color:var(--mut);cursor:pointer}
+.tabs button.on{background:var(--card);color:var(--pri);box-shadow:0 1px 3px #1c22361a}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 16px;border-radius:10px;font:inherit;font-weight:600;cursor:pointer}
+.btn:hover{background:var(--bg)}.btn.pri{background:var(--pri);border-color:var(--pri);color:#fff}.btn.pri:hover{background:#4338ca}
+.btn.del{color:#dc2626}
+.btn:focus-visible,.tabs button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #4f46e555;outline-offset:1px}
+#aviso{margin:16px 28px 0;padding:10px 14px;border-radius:10px;background:#fef3c7;color:#92400e;display:none}
+main{padding:22px 28px;max-width:1280px;margin:auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.bar h2{margin:0;font-size:22px;text-transform:capitalize;min-width:190px;text-align:center}
+.bar .sp{margin-left:auto}
+select,input,textarea{font:inherit;color:var(--ink);padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;width:100%}
+.bar select,.bar input{width:auto}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0 0 14px;color:var(--mut);font-size:13px}
+.legend span{display:inline-flex;align-items:center;gap:6px}.legend i{width:12px;height:12px;border-radius:4px;display:inline-block}
+#grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.dh{text-align:center;font-weight:600;color:var(--mut);font-size:13px;padding:4px 0}
+.dc{min-height:112px;border:1px solid var(--line);border-radius:10px;padding:6px;background:#fff;cursor:pointer;display:flex;flex-direction:column;gap:3px}
+.dc:hover{border-color:var(--pri)}.dc.vazio{border:0;background:none;cursor:default}.dc.fds{background:#f8f9fd}
+.dc .n{font-weight:600;font-size:13px;color:var(--mut);width:24px;height:24px;display:grid;place-items:center;border-radius:50%}
+.dc.hoje .n{background:var(--pri);color:#fff}
+.chip{font-size:12px;line-height:1.25;padding:3px 6px;border-radius:6px;border-left:3px solid;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chip:hover{filter:brightness(.95)}
+dialog{border:0;border-radius:16px;padding:0;width:min(560px,94vw);box-shadow:0 20px 60px #1c223655;color:var(--ink)}
+dialog::backdrop{background:#1c223688}
+dialog form{padding:22px;display:grid;gap:14px}
+dialog h3{margin:0;font-size:19px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:grid;gap:5px;font-weight:600;font-size:13px;color:var(--mut)}
+.foot{display:flex;gap:10px;justify-content:flex-end;margin-top:4px}.foot .del{margin-right:auto}
+.sheet h1{margin:0;font-size:22px}.sheet .sub{color:var(--mut);margin:2px 0 14px}
+.resumo{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.pill{padding:4px 10px;border-radius:99px;font-size:13px;font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;background:var(--pri-s);color:var(--pri);padding:9px 10px;font-size:13px}
+td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr.grp td{background:var(--bg);font-weight:700;border-bottom:1px solid var(--line)}
+.vazio-msg{padding:30px;text-align:center;color:var(--mut)}
+.assin{display:none;margin-top:60px;grid-template-columns:1fr 1fr;gap:60px;text-align:center;font-size:13px}
+.assin div{border-top:1px solid #000;padding-top:6px}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#1c2236;color:#fff;padding:10px 18px;border-radius:10px;display:none;z-index:20}
+@media(max-width:760px){header,main{padding-left:14px;padding-right:14px}.dc{min-height:76px}.chip{font-size:10px;padding:2px 3px}.g2{grid-template-columns:1fr}}
+@media print{
+  @page{margin:14mm}
+  body{background:#fff}
+  .no-print,header,#aviso{display:none!important}
+  main{padding:0;max-width:none}
+  #cal{display:none!important}
+  .card{border:0;padding:0}
+  .assin{display:grid}
+  tr{break-inside:avoid}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<header class="no-print">
+  <div class="brand"><div class="logo"><i data-i="cal"></i></div><div><b>CRAS</b><small>Ocorrências de ponto</small></div></div>
+  <nav class="tabs"><button class="on" data-t="cal">Calendário</button><button data-t="rel">Relatório</button></nav>
+  <button class="btn pri" id="novo"><i data-i="plus"></i>Nova ocorrência</button>
+  <button class="btn" id="cfgBtn" title="Conexão com o Google Sheets" aria-label="Configurações"><i data-i="set"></i></button>
+</header>
+<div id="aviso"></div>
+
+<main>
+<section id="cal" class="view">
+  <div class="card">
+    <div class="bar no-print">
+      <button class="btn" id="ant" aria-label="Mês anterior"><i data-i="l"></i></button>
+      <h2 id="mesTit"></h2>
+      <button class="btn" id="prox" aria-label="Próximo mês"><i data-i="r"></i></button>
+      <button class="btn" id="hojeBtn">Hoje</button>
+      <select id="fFunc" class="sp" aria-label="Filtrar funcionário"></select>
+    </div>
+    <div class="legend" id="legenda"></div>
+    <div id="grid"></div>
+  </div>
+</section>
+
+<section id="rel" class="view" hidden>
+  <div class="card">
+    <div class="bar no-print">
+      <input type="month" id="rMes" aria-label="Mês">
+      <select id="rFunc" aria-label="Funcionário"></select>
+      <label style="display:flex;grid-auto-flow:column;align-items:center;gap:8px;font-weight:500;color:var(--ink)"><input type="checkbox" id="rGrp" style="width:auto">Agrupar por funcionário</label>
+      <button class="btn pri sp" id="imprimir"><i data-i="print"></i>Imprimir</button>
+    </div>
+    <div class="sheet" id="relOut"></div>
+    <div class="assin"><div>Servidor(a)</div><div>Chefe do Departamento</div></div>
+  </div>
+</section>
+</main>
+
+<dialog id="dlg">
+  <form id="frm" method="dialog">
+    <h3 id="dTit">Nova ocorrência</h3>
+    <div class="g2">
+      <label>Data<input type="date" id="fData" required></label>
+      <label>Funcionário<select id="fFuncSel" required></select></label>
+    </div>
+    <div class="g2">
+      <label>Registro<select id="fReg"></select></label>
+      <label>Situação<select id="fSit"></select></label>
+    </div>
+    <div class="g2">
+      <label>Horário previsto<input type="time" id="fPrev"></label>
+      <label>Horário informado<input type="time" id="fInfo"></label>
+    </div>
+    <label>Motivo<textarea id="fMot" rows="3" placeholder="Ex.: Reunião GECAD Avaré"></textarea></label>
+    <div class="foot">
+      <button type="button" class="btn del" id="bDel">Excluir</button>
+      <button type="button" class="btn" id="bCancel">Cancelar</button>
+      <button type="submit" class="btn pri">Salvar</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dCfg">
+  <form id="frmCfg" method="dialog">
+    <h3>Conexão com o Google Sheets</h3>
+    <label>URL do app da Web (termina em /exec)<input id="cUrl" placeholder="https://script.google.com/macros/s/.../exec"></label>
+    <label>PIN (só se você definiu um no script)<input id="cPin" type="password" autocomplete="off"></label>
+    <div class="foot"><button type="button" class="btn" id="cCancel">Cancelar</button><button type="submit" class="btn pri">Salvar e conectar</button></div>
+  </form>
+</dialog>
+<div id="toast" role="status"></div>
+
+<script>
+/* ===== Configuração: edite aqui se precisar ===== */
+const FUNC = ['Dani','Karina','Thamirys','Lais','Matheus','Cida','Ivanete','Isabel','Vanessa'];
+const REG = {'Entrada':['08:00','Ent.'],'Saída almoço':['12:00','S.Alm.'],'Volta do almoço':['13:00','V.Alm.'],'Saída':['17:00','Saída']};
+const SIT = {
+  'Não registrou o ponto':['#dc2626','#fee2e2'],
+  'Horário diferente':['#7c3aed','#ede9fe'],
+  'Atestado médico':['#b45309','#fef08a'],
+  'Consulta / exame':['#0d9488','#ccfbf1'],
+  'Viagem / reunião externa':['#2563eb','#dbeafe'],
+  'Abono / folga':['#16a34a','#dcfce7'],
+  'Outro':['#475569','#e2e8f0']
+};
+/* ================================================ */
+const ICONS={cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',plus:'<path d="M5 12h14M12 5v14"/>',set:'<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>',l:'<path d="m15 18-6-6 6-6"/>',r:'<path d="m9 18 6-6-6-6"/>',print:'<path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>'};
+document.querySelectorAll('[data-i]').forEach(e=>e.outerHTML=`<svg class="i" viewBox="0 0 24 24">${ICONS[e.dataset.i]}</svg>`);
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmtD=k=>k.split('-').reverse().join('/');
+const hoje=new Date().toLocaleDateString('sv-SE');
+const opts=(arr,first)=>(first?`<option value="">${first}</option>`:'')+arr.map(a=>`<option>${esc(a)}</option>`).join('');
+const cfg=()=>JSON.parse(localStorage.getItem('crasCfg')||'{}');
+let data=[],cur=new Date(),editId=null;
+cur.setDate(1);
+
+function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.display='none',3200)}
+
+/* ---------- Dados (Google Sheets ou modo demonstração) ---------- */
+async function load(){
+  const {url,pin}=cfg();
+  const av=$('#aviso');
+  if(!url){
+    data=JSON.parse(localStorage.getItem('crasDemo')||'[]');
+    av.style.display='block';av.textContent='Modo demonstração: os dados ficam só neste navegador. Clique no ícone de configurações para conectar ao Google Sheets.';
+  }else{
+    av.style.display='none';
+    try{
+      const r=await fetch(url+'?pin='+encodeURIComponent(pin||''));
+      const j=await r.json();
+      if(j.erro)throw new Error(j.erro);
+      data=j.dados;
+    }catch(e){toast('Não foi possível carregar: '+e.message)}
+  }
+  render();
+}
+async function send(action,row){
+  const {url,pin}=cfg();
+  if(!url){
+    if(action==='add')data.push({...row,id:Math.random().toString(36).slice(2,10)});
+    else if(action==='update')data=data.map(d=>d.id===row.id?row:d);
+    else data=data.filter(d=>d.id!==row.id);
+    localStorage.setItem('crasDemo',JSON.stringify(data));
+    return render();
+  }
+  try{
+    const r=await fetch(url,{method:'POST',body:JSON.stringify({action,row,pin})}); // text/plain evita bloqueio de CORS
+    const j=await r.json();
+    if(j.erro)throw new Error(j.erro);
+    toast('Salvo na planilha');
+    await load();
+  }catch(e){toast('Erro ao salvar: '+e.message)}
+}
+
+/* ---------- Calendário ---------- */
+const chip=e=>{const s=SIT[e.sit]||SIT['Outro'];const ab=(REG[e.reg]||[,e.reg])[1];
+  return `<span class="chip" data-id="${e.id}" style="background:${s[1]};color:${s[0]};border-color:${s[0]}" title="${esc(e.func+' · '+e.reg+' · '+e.sit+(e.motivo?' · '+e.motivo:''))}">${esc(e.func)} · ${esc(ab)}${e.info?' '+esc(e.info):''}</span>`};
+function renderCal(){
+  const y=cur.getFullYear(),m=cur.getMonth(),f=$('#fFunc').value;
+  $('#mesTit').textContent=cur.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+  const ini=new Date(y,m,1).getDay(),n=new Date(y,m+1,0).getDate();
+  let h=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map(d=>`<div class="dh">${d}</div>`).join('');
+  h+='<div class="dc vazio"></div>'.repeat(ini);
+  for(let d=1;d<=n;d++){
+    const k=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`,wd=new Date(y,m,d).getDay();
+    const ev=data.filter(e=>e.data===k&&(!f||e.func===f)).sort((a,b)=>(a.prev||'').localeCompare(b.prev||''));
+    h+=`<div class="dc ${wd%6==0?'fds':''} ${k===hoje?'hoje':''}" data-d="${k}"><span class="n">${d}</span>${ev.map(chip).join('')}</div>`;
+  }
+  $('#grid').innerHTML=h;
+}
+
+/* ---------- Relatório ---------- */
+function renderRel(){
+  const mes=$('#rMes').value,f=$('#rFunc').value,g=$('#rGrp').checked;
+  if(!mes)return;
+  let rows=data.filter(e=>e.data.startsWith(mes)&&(!f||e.func===f));
+  rows.sort((a,b)=>(g?a.func.localeCompare(b.func):0)||a.data.localeCompare(b.data)||(a.func.localeCompare(b.func))||(a.prev||'').localeCompare(b.prev||''));
+  const [yy,mm]=mes.split('-');
+  const nome=new Date(yy,mm-1,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+  const cont={};rows.forEach(e=>cont[e.sit]=(cont[e.sit]||0)+1);
+  let h=`<h1>CRAS · Ocorrências de ponto</h1><p class="sub">${esc(nome)} · ${f?esc(f):'Todos os funcionários'} · ${rows.length} ocorrência(s)</p>`;
+  h+='<div class="resumo">'+Object.entries(cont).map(([s,c])=>{const k=SIT[s]||SIT['Outro'];return `<span class="pill" style="background:${k[1]};color:${k[0]}">${esc(s)}: ${c}</span>`}).join('')+'</div>';
+  if(!rows.length){$('#relOut').innerHTML=h+'<div class="vazio-msg">Nenhuma ocorrência neste período.</div>';return}
+  h+='<table><thead><tr><th>Data</th><th>Funcionário</th><th>Registro</th><th>Previsto</th><th>Informado</th><th>Situação</th><th>Motivo</th></tr></thead><tbody>';
+  let last='';
+  rows.forEach(e=>{
+    if(g&&e.func!==last){h+=`<tr class="grp"><td colspan="7">${esc(e.func)}</td></tr>`;last=e.func}
+    const k=SIT[e.sit]||SIT['Outro'];
+    h+=`<tr><td>${fmtD(e.data)}</td><td>${esc(e.func)}</td><td>${esc(e.reg)}</td><td>${esc(e.prev)}</td><td>${esc(e.info)||'—'}</td><td><span class="pill" style="background:${k[1]};color:${k[0]}">${esc(e.sit)}</span></td><td>${esc(e.motivo)}</td></tr>`;
+  });
+  $('#relOut').innerHTML=h+'</tbody></table>';
+}
+function render(){renderCal();renderRel()}
+
+/* ---------- Formulário ---------- */
+function abrir(row,dia){
+  editId=row?row.id:null;
+  $('#dTit').textContent=row?'Editar ocorrência':'Nova ocorrência';
+  $('#bDel').style.display=row?'':'none';
+  const r=row||{data:dia||hoje,func:$('#fFunc').value||FUNC[0],reg:'Entrada',prev:REG['Entrada'][0],info:'',sit:'Não registrou o ponto',motivo:''};
+  $('#fData').value=r.data;$('#fFuncSel').value=r.func;$('#fReg').value=r.reg;$('#fSit').value=r.sit;
+  $('#fPrev').value=r.prev;$('#fInfo').value=r.info;$('#fMot').value=r.motivo;
+  $('#dlg').showModal();
+}
+$('#fReg').onchange=()=>{$('#fPrev').value=REG[$('#fReg').value][0]};
+$('#frm').onsubmit=e=>{
+  e.preventDefault();
+  const row={id:editId,data:$('#fData').value,func:$('#fFuncSel').value,reg:$('#fReg').value,prev:$('#fPrev').value,info:$('#fInfo').value,sit:$('#fSit').value,motivo:$('#fMot').value.trim()};
+  $('#dlg').close();
+  send(editId?'update':'add',row);
+};
+$('#bDel').onclick=()=>{if(confirm('Excluir esta ocorrência?')){$('#dlg').close();send('delete',{id:editId})}};
+$('#bCancel').onclick=()=>$('#dlg').close();
+
+/* ---------- Eventos ---------- */
+$('#grid').onclick=e=>{
+  const c=e.target.closest('.chip');
+  if(c)return abrir(data.find(d=>String(d.id)===c.dataset.id));
+  const d=e.target.closest('.dc[data-d]');
+  if(d)abrir(null,d.dataset.d);
+};
+$('#novo').onclick=()=>abrir();
+$('#ant').onclick=()=>{cur.setMonth(cur.getMonth()-1);renderCal()};
+$('#prox').onclick=()=>{cur.setMonth(cur.getMonth()+1);renderCal()};
+$('#hojeBtn').onclick=()=>{cur=new Date();cur.setDate(1);renderCal()};
+$('#fFunc').onchange=renderCal;
+['rMes','rFunc','rGrp'].forEach(i=>$('#'+i).onchange=renderRel);
+$('#imprimir').onclick=()=>{renderRel();window.print()};
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  $('#cal').hidden=b.dataset.t!=='cal';$('#rel').hidden=b.dataset.t!=='rel';
+  if(b.dataset.t==='rel'){$('#rMes').value=$('#rMes').value||`${cur.getFullYear()}-${String(cur.getMonth()+1).padStart(2,'0')}`;renderRel()}
+});
+$('#cfgBtn').onclick=()=>{const c=cfg();$('#cUrl').value=c.url||'';$('#cPin').value=c.pin||'';$('#dCfg').showModal()};
+$('#cCancel').onclick=()=>$('#dCfg').close();
+$('#frmCfg').onsubmit=e=>{e.preventDefault();localStorage.setItem('crasCfg',JSON.stringify({url:$('#cUrl').value.trim(),pin:$('#cPin').value}));$('#dCfg').close();load()};
+
+/* ---------- Início ---------- */
+$('#fFunc').innerHTML=opts(FUNC,'Todos os funcionários');
+$('#rFunc').innerHTML=opts(FUNC,'Todos os funcionários');
+$('#fFuncSel').innerHTML=opts(FUNC);
+$('#fReg').innerHTML=opts(Object.keys(REG));
+$('#fSit').innerHTML=opts(Object.keys(SIT));
+$('#legenda').innerHTML=Object.entries(SIT).map(([s,c])=>`<span><i style="background:${c[0]}"></i>${s}</span>`).join('');
+$('#rMes').value=`${cur.getFullYear()}-${String(cur.getMonth()+1).padStart(2,'0')}`;
+load();
+</script>
+</body>
+</html>
